@@ -62,19 +62,16 @@ public class ConsoleExampleClient extends AbstractClient {
 		
 	}
 
-	@Override
 	public void handleDisconnected() {
 		System.out.println("Disconnected");
 		finished = true;
 	}
 
-	@Override
 	public void handleExchangeDenied() {
 		System.out.println("Chosen partner denied exchnge");
 		finished = true;
 	}
 
-	@Override
 	public void handlePartnersList(Map<Integer, String> partners) {
 		this.partners = partners;
 		System.out.println("Reveived partners list:");
@@ -83,7 +80,6 @@ public class ConsoleExampleClient extends AbstractClient {
 		}
 	}
 
-	@Override
 	public void handlePayload(Payload payload) {
 		this.payload = payload;
 		System.out.println("Received payload:");
@@ -92,7 +88,6 @@ public class ConsoleExampleClient extends AbstractClient {
 		finished = true;
 	}
 
-	@Override
 	public void handleTimedout() {
 		System.out.println("Timedout");
 		finished = true;
