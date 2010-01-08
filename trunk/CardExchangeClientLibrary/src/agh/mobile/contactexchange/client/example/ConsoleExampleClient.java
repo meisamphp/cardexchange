@@ -22,6 +22,8 @@ public class ConsoleExampleClient extends AbstractClient {
 	public ConsoleExampleClient(String name, String phone) throws IOException {
 		super();
 		
+		init();
+		
 		cd = new ClientData();
 		cd.payload = new Payload();
 		cd.payload.name = name;

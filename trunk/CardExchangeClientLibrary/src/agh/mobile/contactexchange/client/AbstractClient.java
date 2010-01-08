@@ -15,7 +15,7 @@ public abstract class AbstractClient implements Connectable {
 	private Client ntpClient;
 	private double timeOffset;
 	
-	public AbstractClient() throws IOException {
+	public void init() throws IOException {
 		ntpClient = new Client(NTP_SERVER_ADDRESS, NTP_SERVER_TIMEOUT);
 		
 		int tryNumber = 0;
