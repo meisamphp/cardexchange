@@ -30,12 +30,12 @@ class Client {
 	private SocketChannel socketChannel;
 	private ByteBuffer messageBuffer;
 	private ClientData clientData;
-	private long clientDataArrivalTime;
-	private long creationTime;
+	private long pairSelectionTime = 0;
+	private long pairsListSentTime = 0;
+	private long clientDataArrivalTime = 0;
+	private long creationTime = 0;
 	private int id;
 	private int pairId;
-	private boolean pairSelected;
-	private boolean hasSentPairsList;
 	private Set<Integer> allIds;
 	
 	public Client(SocketChannel socketChannel, Set<Integer> ids) {
@@ -45,8 +45,6 @@ class Client {
 		id = nextId++;
 		allIds = ids;
 		ids.add(id);
-		pairSelected = false;
-		hasSentPairsList = false;
 	}
 
 	public boolean readData() throws IOException {
@@ -121,7 +119,7 @@ class Client {
 			return false;
 		}
 		this.pairId = pairId;
-		pairSelected = true;
+		pairSelectionTime = Calendar.getInstance().getTimeInMillis();
 		return true;
 	}
 
@@ -144,13 +142,21 @@ class Client {
 	}
 	
 	public boolean hasSentPairsList() {
-		return hasSentPairsList;
+		return (pairsListSentTime > 0);
 	}
 	
 	public boolean hasPairSelected() {
-		return pairSelected;
+		return (pairSelectionTime > 0);
 	}
-		
+	
+	public long getPairSelectionTime() {
+		return pairSelectionTime;
+	}
+
+	public long getPairsListSentTime() {
+		return pairsListSentTime;
+	}
+	
 	public long getClientDataArrivalTime() {
 		return clientDataArrivalTime;
 	}
@@ -197,7 +203,7 @@ class Client {
 		buff.flip();
 		socketChannel.write(buff);
 		
-		hasSentPairsList = true;
+		pairsListSentTime = Calendar.getInstance().getTimeInMillis();
 		logger.info("Partners list send");
 	}
 
