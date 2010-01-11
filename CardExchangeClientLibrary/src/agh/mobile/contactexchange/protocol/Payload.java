@@ -7,4 +7,6 @@ public class Payload implements Serializable {
 	
 	public String name;
 	public String phoneNumber;
+	
+	//TODO: extend
 }
