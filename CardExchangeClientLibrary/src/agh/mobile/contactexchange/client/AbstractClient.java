@@ -35,7 +35,11 @@ public abstract class AbstractClient implements Connectable {
 	}
 	
 	public long getNtpTime() {
-		return System.currentTimeMillis() + (long) timeOffset * 1000; 
+		return getNtpTime(System.currentTimeMillis()); 
+	}
+	
+	public long getNtpTime(long localTime) {
+		return localTime + (long) timeOffset * 1000; 
 	}
 	
 	public Connection getConnection() {
