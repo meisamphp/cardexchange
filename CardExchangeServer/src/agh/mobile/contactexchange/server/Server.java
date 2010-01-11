@@ -21,7 +21,8 @@ public class Server {
 	private static Logger logger = Logger.getLogger("global");
 
 	public static final long WAIT_FOR_PAIR_TIMEOUT = 5000; // 5 sec
-	public static final long CLIENT_OPERATION_TIMEOUT = 30000; // 30 sec
+	public static final long CLIENT_OPERATION_TIMEOUT = 10000; // 10 sec
+	public static final long PAIR_SELECTION_TIMEOUT = 20000; // 20 sec
 
 	private Selector selector;;
 	private SelectionKey serverKey;
@@ -72,14 +73,18 @@ public class Server {
 			Client client = entry.getValue();
 			SelectionKey key = entry.getKey();
 			
-			long t, currentTime;
-			if (client.canBePaired())
-				t = client.getClientDataArrivalTime();
+			long timeoutTime, currentTime;
+			if (client.hasPairSelected())
+				timeoutTime = client.getPairsListSentTime() + PAIR_SELECTION_TIMEOUT + CLIENT_OPERATION_TIMEOUT;
+			else if (client.hasSentPairsList())
+				timeoutTime = client.getPairsListSentTime() + PAIR_SELECTION_TIMEOUT;
+			else if (client.canBePaired())
+				timeoutTime = client.getClientDataArrivalTime() + CLIENT_OPERATION_TIMEOUT;
 			else
-				t = client.getCreationTime();
+				timeoutTime = client.getCreationTime() + CLIENT_OPERATION_TIMEOUT;
 			currentTime = Calendar.getInstance().getTimeInMillis();
 			
-			if (t + CLIENT_OPERATION_TIMEOUT < currentTime) {
+			if (timeoutTime < currentTime) {
 				try {
 					client.sendTimeOut();
 				} catch (IOException e) {
