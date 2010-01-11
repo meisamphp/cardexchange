@@ -10,4 +10,5 @@ public class ClientLocation implements Serializable {
 	public double accuracy; // in meters
 
 	public long cellId;
+	public long cellLac;
 }
