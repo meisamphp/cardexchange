@@ -170,7 +170,7 @@ public class AndroidClient extends AbstractClient implements Runnable {
 		setState(State.FINISHED);
 	}
 
-	public void setLocation(Location gpsLocation, Location cellularLocation) {
+	public void setLocation(Location gpsLocation, Location cellularLocation, int cid, int lac) {
 		ClientLocation cl;
 		
 		if(gpsLocation != null) {
@@ -187,6 +187,13 @@ public class AndroidClient extends AbstractClient implements Runnable {
 			cl.latitude = cellularLocation.getLatitude();
 			cl.accuracy = cellularLocation.getAccuracy();
 			cd.locations.put(ClientLocationType.NETWORK, cl);
+		}
+		
+		if(cid != -1 && lac != -1) {
+			cl = new ClientLocation();
+			cl.cellId = cid;
+			cl.cellLac = lac;
+			cd.locations.put(ClientLocationType.CELL_ID, cl);
 		}
 	}
 
