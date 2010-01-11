@@ -22,6 +22,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Handler.Callback;
 import android.provider.Contacts;
+import android.telephony.CellLocation;
+import android.telephony.TelephonyManager;
+import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -36,8 +39,7 @@ public class MainActivity extends Activity implements OnClickListener, OnCancelL
 	
 	boolean hasGPS, hasCellular;
 	Location gpsLocation;
-	Location cellularLocation;
-	
+	Location cellularLocation;	
 	
 	SharedPreferences prefs;
 	ProgressDialog progressDialog;
@@ -110,10 +112,19 @@ public class MainActivity extends Activity implements OnClickListener, OnCancelL
 		progressDialog = ProgressDialog.show(this, "Exchanging card", "", true, true, this);
 		progressDialog.setMessage("Connecting...");
 
+		TelephonyManager tm  = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+		int cellId = -1, cellLac = -1;
+		if (tm != null) {
+			CellLocation location = tm.getCellLocation();
+			if (location instanceof GsmCellLocation)
+				cellId = ((GsmCellLocation)location).getCid();
+				cellLac = ((GsmCellLocation)location).getLac();
+		}
+        
 		client = new AndroidClient(clientHandler);
 		client.setExchangeTime(time);
 		client.setSettings(settings);		
-		client.setLocation(gpsLocation, cellularLocation);
+		client.setLocation(gpsLocation, cellularLocation, cellId, cellLac);
 		
     	stopGettingLocation();
     	
