@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+
+
+
+<LinearLayout android:id="@+id/LinearLayout01" android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical" android:padding="5px">
+
+
+
+<Button android:layout_height="wrap_content" android:id="@+id/OkBtn" android:text="OK" android:layout_width="fill_parent"></Button><LinearLayout android:id="@+id/LinearLayout02" android:layout_height="wrap_content" android:layout_width="fill_parent"><TextView android:id="@+id/TextView02" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Name" android:minWidth="100px"></TextView><EditText android:layout_height="wrap_content" android:layout_width="fill_parent" android:inputType="textPersonName" android:id="@+id/NameEdit"></EditText>
+</LinearLayout>
+<LinearLayout android:id="@+id/LinearLayout03" android:layout_height="wrap_content" android:layout_width="fill_parent"><TextView android:id="@+id/TextView01" android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="Phone number" android:minWidth="100px"></TextView><EditText android:layout_height="wrap_content" android:layout_width="fill_parent" android:inputType="phone" android:id="@+id/PhoneEdit"></EditText>
+</LinearLayout>
+
+
+
+
+</LinearLayout>
