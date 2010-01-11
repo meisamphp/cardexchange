@@ -1,7 +1,18 @@
 package agh.mobile.contactexchange.protocol;
 
 public enum ClientLocationType {
-	GPS, // GPS based location (latitude/longitude)
-	NETWORK, // cell network based location (latitude/longitude)
-	CELL_ID,// cell network based location (cell id)
+	/**
+	 * GPS based location (latitude/longitude)
+	 */
+	GPS,
+	
+	/**
+	 * cellular network based location (latitude/longitude)
+	 */
+	NETWORK,
+	
+	/**
+	 * cellular network based location (cellId/cellLac)
+	 */
+	CELL_ID
 }
