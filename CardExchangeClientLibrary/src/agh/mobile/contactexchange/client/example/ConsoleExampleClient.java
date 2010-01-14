@@ -31,8 +31,7 @@ public class ConsoleExampleClient extends AbstractClient {
 	}
 	
 
-	private void go(String host, int port) throws UnknownHostException, IOException {
-		getConnection().connect(host, port);
+	private void go() throws UnknownHostException, IOException {
 		while (!finished) {
 			getConnection().readData();
 			if(!dataSent) {
@@ -97,13 +96,17 @@ public class ConsoleExampleClient extends AbstractClient {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		if (args.length != 4) {
+		if (args.length != 2 && args.length != 4) {
 			printUsage();
 			return;
 		}
 		try {
-			ConsoleExampleClient client = new ConsoleExampleClient(args[2], args[3]);
-			client.go(args[0], Integer.decode(args[1]));
+			ConsoleExampleClient client = new ConsoleExampleClient(args[0], args[1]);
+			if (args.length == 4)
+				client.getConnection().connect(args[2], Integer.decode(args[3]));
+			else
+				client.getConnection().connect(client.getServerAddress());
+			client.go();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -112,6 +115,6 @@ public class ConsoleExampleClient extends AbstractClient {
 
 	private static void printUsage() {
 		System.out.println("Usage:");
-		System.out.println("java ConsoleExampleClient serverAddress portNumber name phoneNumber");		
+		System.out.println("java ConsoleExampleClient name phoneNumber [serverAddress portNumber]");		
 	}
 }
