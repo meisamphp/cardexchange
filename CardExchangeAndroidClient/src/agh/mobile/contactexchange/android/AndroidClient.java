@@ -40,9 +40,6 @@ public class AndroidClient extends AbstractClient implements Runnable {
 	Handler handler;
 	
 	ClientData cd = new ClientData();
-
-	String address = "192.168.0.100";
-	int port = 4444;
 	
 	long exchangeTime;
 
@@ -113,7 +110,7 @@ public class AndroidClient extends AbstractClient implements Runnable {
 	private void connect() throws Exception {
 		try {
 			init();
-			getConnection().connect(address, port);
+			getConnection().connect(getServerAddress());
 			isConnected = true;
 			setState(State.CONNECTED);
 		}
