@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
@@ -37,6 +38,10 @@ public class Connection {
 	Connection() {
 		inputBuffer = ByteBuffer.allocate(BUFF_SIZE);
 		listeners = new HashSet<Connectable>();
+	}
+	
+	public void connect(InetSocketAddress address) throws UnknownHostException, IOException {
+		connect(address.getHostName(), address.getPort());
 	}
 	
 	public void connect(String host, int port) throws UnknownHostException, IOException {
