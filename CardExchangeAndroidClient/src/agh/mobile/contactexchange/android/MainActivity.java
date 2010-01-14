@@ -350,15 +350,14 @@ public class MainActivity extends Activity implements OnClickListener, OnCancelL
 	}
 	
 	private boolean haveLocation() {
-		boolean gpsOk = false, cellularOk = false;
 
-		if ((hasGPS && gpsLocation != null) || !hasGPS)
-			gpsOk = true;
+		if (hasGPS && gpsLocation != null)
+			return true;
 		
-		if ((hasCellular && cellularLocation != null) || !hasCellular)
-			cellularOk = true;
+		if (hasCellular && cellularLocation != null)
+			return true;
 		
-		return (gpsOk && cellularOk);
+		return false;
 	}
 	
 	private void tryEnableExchanging() {
