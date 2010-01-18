@@ -7,8 +7,6 @@ import java.util.Map;
 
 import agh.mobile.contactexchange.client.AbstractClient;
 import agh.mobile.contactexchange.protocol.ClientData;
-import agh.mobile.contactexchange.protocol.ClientLocation;
-import agh.mobile.contactexchange.protocol.ClientLocationType;
 import agh.mobile.contactexchange.protocol.Payload;
 import android.location.Location;
 import android.os.Bundle;
@@ -168,30 +166,25 @@ public class AndroidClient extends AbstractClient implements Runnable {
 	}
 
 	public void setLocation(Location gpsLocation, Location cellularLocation, int cid, int lac) {
-		ClientLocation cl;
 		
 		if(gpsLocation != null) {
-			cl = new ClientLocation();
-			cl.latitude = gpsLocation.getLatitude();
-			cl.latitude = gpsLocation.getLatitude();
-			cl.accuracy = gpsLocation.getAccuracy();
-			cd.locations.put(ClientLocationType.GPS, cl);
+			cd.gpsLatitude = gpsLocation.getLatitude();
+			cd.gpsLongitude = gpsLocation.getLongitude();
+			cd.gpsAccuracy = gpsLocation.getAccuracy();
 		}
+		else
+			cd.gpsAccuracy = -1.0;
 		
 		if(cellularLocation != null) {
-			cl = new ClientLocation();
-			cl.latitude = cellularLocation.getLatitude();
-			cl.latitude = cellularLocation.getLatitude();
-			cl.accuracy = cellularLocation.getAccuracy();
-			cd.locations.put(ClientLocationType.NETWORK, cl);
+			cd.cellularLatitude = cellularLocation.getLatitude();
+			cd.cellularLongitude = cellularLocation.getLongitude();
+			cd.cellularAccuracy = cellularLocation.getAccuracy();
 		}
+		else
+			cd.gpsAccuracy = -1.0;
 		
-		if(cid != -1 && lac != -1) {
-			cl = new ClientLocation();
-			cl.cellId = cid;
-			cl.cellLac = lac;
-			cd.locations.put(ClientLocationType.CELL_ID, cl);
-		}
+		cd.cellId = cid;
+		cd.cellLac = lac;
 	}
 
 	public void setSettings(UserSettings settings) {
