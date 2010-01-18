@@ -13,10 +13,31 @@ public class ClientData implements Serializable {
 	public long time; 
 	
 	/**
-	 * Client locations according to GPS, cellular location or cell ID/LAC
+	 * Client location according to GPS
 	 */
-	public EnumMap<ClientLocationType, ClientLocation> locations =
-		new EnumMap<ClientLocationType, ClientLocation>(ClientLocationType.class);
+	public double gpsLatitude;
+	public double gpsLongitude;
+	/*
+	 * position accuracy in meters or -1.0 if GPS position is unknown
+	 * or 0.0 if position is known but accuracy is unknown.
+	 */
+	public double gpsAccuracy;  
+
+	/**
+	 * Client location according to cellular network estimation
+	 */
+	public double cellularLatitude;
+	public double cellularLongitude;
+	/*
+	 * position accuracy in meters. Same rules as for gpsAccuracy field.
+	 */
+	public double cellularAccuracy;
+	
+	/**
+	 * Client GSM cell ID and LAC. -1 if unknown
+	 */
+	public long cellId;
+	public long cellLac;
 	
 	/**
 	 * Client contact info like name or phone number
