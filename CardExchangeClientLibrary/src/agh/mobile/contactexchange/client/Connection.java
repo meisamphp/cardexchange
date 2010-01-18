@@ -17,8 +17,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import com.sun.imageio.plugins.common.PaletteBuilder;
+
 import agh.mobile.contactexchange.protocol.ClientData;
 import agh.mobile.contactexchange.protocol.MessageType;
+import agh.mobile.contactexchange.protocol.PairsList;
 import agh.mobile.contactexchange.protocol.Payload;
 
 public class Connection {
@@ -98,18 +101,14 @@ public class Connection {
 	private void handleData(int type, byte[] val) throws IOException {
 		switch(type) {
 		case MessageType.PARTNERS_LIST:
-			Map<Integer, String> partners = (Map<Integer, String>) deserializeMessage(val);
-			if (partners != null)
-				notifyPartnersListArrived(partners);
-			else
-				disconnect();
+			PairsList partners = new PairsList();
+			partners.fromByteArray(val);
+			notifyPartnersListArrived(partners);
 			break;
 		case MessageType.PAYLOAD:
-			Payload payload = (Payload) deserializeMessage(val);
-			if (payload != null)
-				notifyPayloadArrived(payload);
-			else
-				disconnect();
+			Payload payload = new Payload();
+			payload.fromByteArray(val);
+			notifyPayloadArrived(payload);
 			break;
 		case MessageType.TIMEDOUT:
 			notifyTimedout();
@@ -148,23 +147,6 @@ public class Connection {
 			listener.handleDisconnected();
 	}
 
-	private Object deserializeMessage(byte[] val) {
-		Object msg;
-		try {
-			ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(val));
-			msg = ois.readObject();
-		} catch (IOException e) {
-			logger.severe("Cannot deserialize an object. Disconnecting.");
-			e.printStackTrace();
-			return null;
-		} catch (ClassNotFoundException e) {
-			logger.severe("Class not found. Disconnecting.");
-			e.printStackTrace();
-			return null;
-		}
-		return msg;
-	}
-
 	public void disconnect() throws IOException {
 		notifyDisconnected();
 		wasConnected = false;
@@ -177,13 +159,12 @@ public class Connection {
 	public void sendClientData(ClientData clientData) throws IOException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		DataOutputStream dos = new DataOutputStream(baos);
+		
+		byte cd[] = clientData.toByteArray();
+
 		dos.writeInt(MessageType.CLIENT_DATA);
-		
-		ByteArrayOutputStream tmp = new ByteArrayOutputStream();
-		(new ObjectOutputStream(tmp)).writeObject(clientData);
-		
-		dos.writeInt(tmp.toByteArray().length);
-		dos.write(tmp.toByteArray());
+		dos.writeInt(cd.length);
+		dos.write(cd);
 
 		baos.writeTo(os);
 	}

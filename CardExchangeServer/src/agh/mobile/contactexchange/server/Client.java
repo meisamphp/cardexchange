@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 
 import agh.mobile.contactexchange.protocol.ClientData;
 import agh.mobile.contactexchange.protocol.MessageType;
+import agh.mobile.contactexchange.protocol.PairsList;
 
 class Client {
 	private static Logger logger = Logger.getLogger("global");
@@ -77,8 +78,14 @@ class Client {
 	private boolean handleData(int type, byte[] val) {
 		switch (type) {
 		case MessageType.CLIENT_DATA:
-			ClientData clientDataMsg = (ClientData) deserializeMessage(val);
-			return (clientDataMsg == null ? false : handleClientDataMsg(clientDataMsg));
+			ClientData clientDataMsg = new ClientData();
+			try {
+				clientDataMsg.fromByteArray(val);
+			} catch (IOException e) {
+				logger.severe("Cannot deserialize ClientData message");
+				return false;
+			}
+			return handleClientDataMsg(clientDataMsg);
 		case MessageType.PAIR_ID:
 			ByteBuffer b = ByteBuffer.allocate(4).put(val);
 			b.flip();
@@ -185,14 +192,12 @@ class Client {
 	}
 	
 	public void sendPairsList(List<Client> pairedClients) throws IOException {
-		Map<Integer, String> pairs = new HashMap<Integer, String>();
+		PairsList pairs = new PairsList();
 		for (Client c : pairedClients) {
 			pairs.put(c.id, c.clientData.payload.name);
 		}
 		
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		(new ObjectOutputStream(baos)).writeObject(pairs);
-		byte [] val = baos.toByteArray();
+		byte [] val = pairs.toByteArray();
 		int len = val.length;
 		ByteBuffer buff = ByteBuffer.allocate(len + 8);
 		
@@ -208,9 +213,7 @@ class Client {
 	}
 
 	public void sendPayload(Client client) throws IOException {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		(new ObjectOutputStream(baos)).writeObject(client.clientData.payload);
-		byte [] val = baos.toByteArray();
+		byte [] val = client.clientData.payload.toByteArray();
 		int len = val.length;
 		ByteBuffer buff = ByteBuffer.allocate(len + 8);
 		
