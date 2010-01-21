@@ -1,16 +1,10 @@
 package agh.mobile.contactexchange.server;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -110,24 +104,6 @@ class Client {
 			logger.warning("Wrong message type. Dropping client's connection.");
 			return false;
 		}
-	}
-
-
-	private Object deserializeMessage(byte[] val) {
-		Object msg;
-		try {
-			ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(val));
-			msg = ois.readObject();
-		} catch (IOException e) {
-			logger.severe("Cannot deserialize an object. Dropping client's connection.");
-			e.printStackTrace();
-			return null;
-		} catch (ClassNotFoundException e) {
-			logger.severe("Class not found. Dropping client's connection.");
-			e.printStackTrace();
-			return null;
-		}
-		return msg;
 	}
 
 	private boolean handlePairIdMsg(int pairId) {
