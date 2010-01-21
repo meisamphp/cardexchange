@@ -18,10 +18,25 @@ import agh.mobile.contactexchange.protocol.ClientData;
 import agh.mobile.contactexchange.protocol.MessageType;
 import agh.mobile.contactexchange.protocol.PairsList;
 
+class Location {
+	double lat;
+	double lon;
+	double acc;
+	
+	public Location(double lat, double lon, double acc) {
+		this.lat = lat;
+		this.lon = lon;
+		this.acc = acc;
+	}
+}
+
+
 class Client {
 	private static Logger logger = Logger.getLogger("global");
 
 	private final static int PAIRING_TIME_RANGE = 3000; // 3 sec;
+	private final static double DEFAULT_GPS_ACCURACY = 100.0; // 100 m;
+	private final static double DEFAULT_CELLULAR_ACCURACY = 10000.0; // 10 km
 	
 	
 	private final static int BUFF_SIZE = 1024*16;
@@ -134,6 +149,11 @@ class Client {
 		logger.info("Received ClientData message");
 		clientData = msg;
 		clientDataArrivalTime = Calendar.getInstance().getTimeInMillis();
+		
+		if (clientData.gpsAccuracy == 0.0)
+			clientData.gpsAccuracy = DEFAULT_GPS_ACCURACY;
+		if (clientData.cellularAccuracy == 0.0)
+			clientData.cellularAccuracy = DEFAULT_CELLULAR_ACCURACY;
 		return true;
 	}
 	
@@ -172,14 +192,58 @@ class Client {
 		return creationTime;
 	}
 
+	private double computeDistance(Location l1, Location l2) {
+		double r = 6371000.0; // earth radius
+		double toRads = Math.PI/180.0;
+		
+		logger.info("lat1:" + l1.lat + ", lon1:" + l1.lon + "; lat2:" + l2.lat + ", lon2:" + l2.lon);
+		
+		return Math.acos(Math.sin(l1.lat*toRads) * Math.sin(l2.lat*toRads) + 
+						 Math.cos(l1.lat*toRads) * Math.cos(l2.lat*toRads) *
+						 Math.cos(l2.lon*toRads - l1.lon*toRads)) * r;
+	}
+	
+	private Location getBetterLocation(ClientData cd) {
+		boolean hasGPS, hasCell, useGPS;
+
+		hasGPS = cd.gpsAccuracy > 0.0;
+		hasCell = cd.cellularAccuracy > 0.0;
+		
+		if (!hasCell && !hasGPS)
+			return null;
+		else if (!hasCell)
+			useGPS = true;
+		else if (!hasGPS)
+			useGPS = false;
+		else if (cd.gpsAccuracy < cd.cellularAccuracy)
+			useGPS = true;
+		else
+			useGPS = false;
+		
+		if (useGPS)
+			return new Location(cd.gpsLatitude, cd.gpsLongitude, cd.gpsAccuracy);
+		else
+			return new Location(cd.cellularLatitude, cd.cellularLongitude, cd.cellularAccuracy);
+	}
 	
 	public boolean pairsWith(Client client) {
-		// TODO: extend matching algorithm with other parameters
-		// like position and cellID
-		if (Math.abs(client.clientData.time - clientData.time) < PAIRING_TIME_RANGE)
-			return true;
-		else
+		
+		Location l1 = getBetterLocation(clientData);
+		Location l2 = getBetterLocation(client.clientData);
+		
+		if (l1 == null || l2 == null)
 			return false;
+
+		double dist = computeDistance(l1, l2);
+		
+		logger.info("dist:" + dist);
+		
+		if (Math.abs(client.clientData.time - clientData.time) >= PAIRING_TIME_RANGE)
+			return false;
+		if (dist > l1.acc + l2.acc)
+			return false;
+		
+		return true;
 	}
 
 
