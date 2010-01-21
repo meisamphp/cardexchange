@@ -41,6 +41,8 @@ public class MainActivity extends Activity implements OnClickListener, OnCancelL
 	Location gpsLocation;
 	Location cellularLocation;	
 	
+	boolean settingsCanceled = false;
+	
 	SharedPreferences prefs;
 	ProgressDialog progressDialog;
 	Handler clientHandler, delayHandler;
@@ -83,7 +85,8 @@ public class MainActivity extends Activity implements OnClickListener, OnCancelL
 	    	settingsComplete();
 	    else {
 	    	setStatusText("Set your settings first.");
-			showSettings();
+	    	if(!settingsCanceled)
+	    		showSettings();
 	    }
     }
     
@@ -165,7 +168,10 @@ public class MainActivity extends Activity implements OnClickListener, OnCancelL
 				prefsEd.putString("phone", settings.getPhone());
 				prefsEd.commit();
 				settingsComplete();
+				settingsCanceled = false;
 			}
+			else
+				settingsCanceled = true;
 			break;
 		case GET_PARTNER_REQ:
 			if (resultCode == RESULT_OK && client != null) {
