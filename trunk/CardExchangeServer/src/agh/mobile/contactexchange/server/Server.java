@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 public class Server {
 	private static Logger logger = Logger.getLogger("global");
 
-	public static final long WAIT_FOR_PAIR_TIMEOUT = 5000; // 5 sec
+	public static final long WAIT_FOR_PAIR_TIMEOUT = 4000; // 4 sec
 	public static final long CLIENT_OPERATION_TIMEOUT = 10000; // 10 sec
 	public static final long PAIR_SELECTION_TIMEOUT = 20000; // 20 sec
 
