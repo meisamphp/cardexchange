@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 public class PairsList extends HashMap<Integer, String> {
+	private static final long serialVersionUID = 1L;
 
 	public void fromByteArray(byte[] data) throws IOException {
 		ByteArrayInputStream bais = new ByteArrayInputStream(data);
