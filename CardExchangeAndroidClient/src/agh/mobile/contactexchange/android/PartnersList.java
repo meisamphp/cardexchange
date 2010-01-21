@@ -32,7 +32,7 @@ public class PartnersList extends ListActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		setTitle("Select a partner to ecchange cards");
+		setTitle("Select a partner to exchange cards");
 		
 		HashMap<Integer, String> partners = (HashMap<Integer, String>) getIntent().getExtras().getSerializable("partners");
 
