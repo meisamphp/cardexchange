@@ -12,6 +12,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 
 
@@ -171,6 +172,7 @@ public class AndroidClient extends AbstractClient implements Runnable {
 			cd.gpsLatitude = gpsLocation.getLatitude();
 			cd.gpsLongitude = gpsLocation.getLongitude();
 			cd.gpsAccuracy = gpsLocation.getAccuracy();
+			Log.i("gpsLoc", "" + cd.gpsLatitude + " " + cd.gpsLongitude + " " + cd.gpsAccuracy);
 		}
 		else
 			cd.gpsAccuracy = -1.0;
@@ -179,9 +181,10 @@ public class AndroidClient extends AbstractClient implements Runnable {
 			cd.cellularLatitude = cellularLocation.getLatitude();
 			cd.cellularLongitude = cellularLocation.getLongitude();
 			cd.cellularAccuracy = cellularLocation.getAccuracy();
+			Log.i("cellLoc", "" + cd.cellularLatitude + " " + cd.cellularLongitude + " " + cd.cellularAccuracy);
 		}
 		else
-			cd.gpsAccuracy = -1.0;
+			cd.cellularAccuracy = -1.0;
 		
 		cd.cellId = cid;
 		cd.cellLac = lac;
