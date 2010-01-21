@@ -35,6 +35,8 @@ public class MainActivity extends Activity implements OnClickListener, OnCancelL
 	public static final int GET_SETTINGS_REQ = 1;
 	public static final int GET_PARTNER_REQ = 2;
 	
+	public static final int GETTING_LOCATION_TIMEOUT = 30000;
+	
 	UserSettings settings;
 	
 	boolean hasGPS, hasCellular;
@@ -338,7 +340,7 @@ public class MainActivity extends Activity implements OnClickListener, OnCancelL
 			handleNoLocation();
 		else {
 			Log.i("startGettingLocation(", "starting timeout");
-			delayHandler.sendEmptyMessageDelayed(0, 15000);
+			delayHandler.sendEmptyMessageDelayed(0, GETTING_LOCATION_TIMEOUT);
 		}
 	}
 	
