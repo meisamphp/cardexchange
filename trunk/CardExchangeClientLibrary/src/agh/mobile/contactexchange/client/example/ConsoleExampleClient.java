@@ -36,6 +36,8 @@ public class ConsoleExampleClient extends AbstractClient {
 			getConnection().readData();
 			if(!dataSent) {
 				cd.time = getNtpTime();
+				cd.cellularLatitude = 50.061389; // krakow
+				cd.cellularLongitude = 19.938333;
 				getConnection().sendClientData(cd);
 				dataSent = true;
 			}
