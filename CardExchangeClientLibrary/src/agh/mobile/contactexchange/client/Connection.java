@@ -1,12 +1,9 @@
 package agh.mobile.contactexchange.client;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -16,8 +13,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
-
-import com.sun.imageio.plugins.common.PaletteBuilder;
 
 import agh.mobile.contactexchange.protocol.ClientData;
 import agh.mobile.contactexchange.protocol.MessageType;
@@ -97,7 +92,6 @@ public class Connection {
 		
 	}
 	
-	@SuppressWarnings("unchecked")
 	private void handleData(int type, byte[] val) throws IOException {
 		switch(type) {
 		case MessageType.PARTNERS_LIST:
