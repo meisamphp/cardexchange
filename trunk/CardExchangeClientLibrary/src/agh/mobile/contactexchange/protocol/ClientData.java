@@ -37,12 +37,6 @@ public class ClientData implements Serializable {
 	public double cellularAccuracy;
 	
 	/**
-	 * Client GSM cell ID and LAC. -1 if unknown
-	 */
-	public long cellId;
-	public long cellLac;
-	
-	/**
 	 * Client contact info like name or phone number
 	 */
 	public Payload payload = new Payload();
@@ -58,8 +52,6 @@ public class ClientData implements Serializable {
 		cellularLatitude = dis.readDouble();
 		cellularLongitude = dis.readDouble();
 		cellularAccuracy = dis.readDouble();
-		cellId = dis.readLong();
-		cellLac = dis.readLong();
 		
 		byte [] pl = new byte[dis.available()];
 		dis.read(pl);
@@ -78,8 +70,6 @@ public class ClientData implements Serializable {
 		dos.writeDouble(cellularLatitude);
 		dos.writeDouble(cellularLongitude);
 		dos.writeDouble(cellularAccuracy);
-		dos.writeLong(cellId);
-		dos.writeLong(cellLac);
 		dos.write(payload.toByteArray());
 
 		return baos.toByteArray();
