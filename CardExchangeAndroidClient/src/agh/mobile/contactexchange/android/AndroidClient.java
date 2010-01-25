@@ -166,7 +166,7 @@ public class AndroidClient extends AbstractClient implements Runnable {
 		setState(State.FINISHED);
 	}
 
-	public void setLocation(Location gpsLocation, Location cellularLocation, int cid, int lac) {
+	public void setLocation(Location gpsLocation, Location cellularLocation) {
 		
 		if(gpsLocation != null) {
 			cd.gpsLatitude = gpsLocation.getLatitude();
@@ -185,9 +185,6 @@ public class AndroidClient extends AbstractClient implements Runnable {
 		}
 		else
 			cd.cellularAccuracy = -1.0;
-		
-		cd.cellId = cid;
-		cd.cellLac = lac;
 	}
 
 	public void setSettings(UserSettings settings) {
