@@ -19,10 +19,10 @@ namespace Mobilki
             InitializeComponent();
             this.screen = scr;
             this.partners = pairs;
-            foreach (KeyValuePair<int, string> p in pairs)
+            foreach (int key in pairs.Keys) 
             {
                 MenuItem menuItem = new MenuItem();
-                menuItem.Text = p.Value;
+                menuItem.Text = (string)pairs[key];
                 chooseMenuItem.MenuItems.Add(menuItem);
                 menuItem.Click += new System.EventHandler(this.pairClicked);
             }
@@ -31,11 +31,11 @@ namespace Mobilki
         public void pairClicked(object sender, EventArgs e)
         {
             string name = ((MenuItem)sender).Text;
-            foreach (KeyValuePair<int, string> p in partners)
+            foreach (int key in partners.Keys)
             {
-                if (((string)p.Value).Equals(name))
+                if (((string)partners[key]).Equals(name))
                 {
-                    screen.SelectedPairId = (int)p.Key;
+                    screen.sendChoice((int)key);
                     exit(null, null);
                 }
             }

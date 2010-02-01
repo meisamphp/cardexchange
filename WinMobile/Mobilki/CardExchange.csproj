@@ -64,10 +64,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CardExchangeUtils\CellId.cs" />
+    <Compile Include="ByteUtils.cs" />
     <Compile Include="CardExchangeUtils\CellIdToLocation.cs" />
     <Compile Include="CardExchangeUtils\GpsHandler.cs" />
     <Compile Include="CardExchangeUtils\NTPClient.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="JSON.cs" />
     <Compile Include="CardExchangeUtils\RIL.cs" />
     <Compile Include="PairList.cs" />

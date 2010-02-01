@@ -16,31 +16,15 @@ namespace Mobilki
 {
     public partial class MainScreen : Form
     {
-        private const int BUFF_SIZE = 4096;
-        public int SelectedPairId = -1;
-
         private Socket socket = null;
+        private State state = State.IDLE;
 
-        public enum State
+        public MainScreen()
         {
-            IDLE,
-            CONNECTED,
-            DATA_SENT,
-            PAIRLIST_RECEIVED,
-            PAIRCHOICE_SENT,
-            PAYLOAD_RECEIVED
-        };
-
-        public class MsgType
-        {
-            public const int PAIRLIST = 1;
-            public const int PAIR_ID = 2;
-            public const int PAYLOAD = 3;
-            public const int TIMEOUT = 4;
-            public const int EXCHANGE_DENIED = 5;
+            /* initialize this component */
+            InitializeComponent();
         }
 
-        private State state = State.IDLE;
 
         private void setState(State s)
         {
@@ -51,30 +35,33 @@ namespace Mobilki
                     exchangeMenuItem.Enabled = false;
                     stateLabel.Text = "Sending data...";
                     break;
+
                 case State.DATA_SENT :
                     stateLabel.Text = "Waiting for server response...";
                     break;
+
                 case State.PAIRCHOICE_SENT :
                     stateLabel.Text = "Choice sent...";
                     break;
+
                 case State.PAIRLIST_RECEIVED :
                     stateLabel.Text = "Received pairlist.";
                     break;
+
+                case State.PAYLOAD_RECEIVED :
+                    exchangeMenuItem.Enabled = true;
+                    stateLabel.Text = "Contact saved.";
+                    break;
+
                 case State.IDLE :
                     exchangeMenuItem.Enabled = true;
                     stateLabel.Text = "Idle.";
                     break;
             }
-            Refresh();
         }
 
-        public MainScreen()
-        {
-            /* initialize this component */
-            InitializeComponent();
-        }
-
-        private void button_Click(object sender, EventArgs e)
+        
+        private void exchangeButtonClick(object sender, EventArgs e)
         {
             if (state != State.IDLE)
             {
@@ -91,6 +78,7 @@ namespace Mobilki
 
                 //GpsHandler h = new GpsHandler(this);
                 //h.Load();
+                
                 Location cellIdLocation = new Location();
                 try
                 {
@@ -101,38 +89,35 @@ namespace Mobilki
                     System.Diagnostics.Debug.WriteLine(x.StackTrace);
                 }
 
-                Settings.cellAcc = cellIdLocation.accuracy;
-                Settings.cellLat = cellIdLocation.latitude;
-                Settings.cellLon = cellIdLocation.longitude;
-                Settings.time = DateTime.Now.Ticks;
-                
-                Refresh();
+                Settings.setLocation(cellIdLocation);
+                Settings.setTime();
 
                 sendData();
                 if (receiveData() < 0)
                     return;
 
-                disconnect("Idle.");
             }
+
         }
 
+        
         private void sendData()
         {
-            System.Net.IPAddress ipAdd = System.Net.IPAddress.Parse("192.168.1.101");
-            System.Net.IPEndPoint remoteEP = new IPEndPoint(ipAdd, 4444);
+            System.Net.IPAddress ipAdd = System.Net.IPAddress.Parse(Constants.SERVER_IP);
+            System.Net.IPEndPoint remoteEP = new IPEndPoint(ipAdd, Constants.SERVER_PORT);
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             socket.Connect(remoteEP);
-            byte[] buff = Settings.ToByteArray();
-            socket.Send(buff);
+            
+            socket.Send(Settings.ToByteArray());
 
             setState(State.DATA_SENT);
         }
 
+
         private int receiveData()
         {
-            Byte[] buff = new Byte[BUFF_SIZE];
+            Byte[] buff = new Byte[Constants.BUFF_SIZE];
             int read = socket.Receive(buff);
-            System.Diagnostics.Debug.WriteLine("Got msg");
 
             if (read < 0)
             {
@@ -140,30 +125,21 @@ namespace Mobilki
                 setState(State.IDLE);
                 return -1;
             }
-
-            int intSize = 4;
             
-            if (read > 4)
+            if (read > ByteUtils.INT_SIZE)
             {
-                int pos = 0;
                 while (read > 0)
                 {
-                    byte[] tmp = new byte[intSize];
-                    Buffer.BlockCopy(buff, pos, tmp, 0, intSize);
-                    Array.Reverse(tmp);
-                    int type = BitConverter.ToInt32(tmp, 0);
+                    int pos = 0;
 
-                    pos += intSize;
-                    
-                    Buffer.BlockCopy(buff, pos, tmp, 0, intSize);
-                    Array.Reverse(tmp);
-                    int len = BitConverter.ToInt32(tmp, 0);
-                    
-                    pos += intSize;
+                    int type = ByteUtils.extractInt(buff, pos); // message type
+                    pos += ByteUtils.INT_SIZE;
 
-                    byte[] val = new byte[len];
+                    int len = ByteUtils.extractInt(buff, pos); // message length
+                    pos += ByteUtils.INT_SIZE;
+
+                    byte[] val = new byte[len];     // message data
                     Buffer.BlockCopy(buff, pos, val, 0, len);
-                                        
                     pos += len;
 
                     handleData(type, val);
@@ -175,44 +151,39 @@ namespace Mobilki
                         buff = rest;
                     }
                     read -= pos;
-                    pos = 0;
                 }
             }
 
             return 1;
         }
 
+        
         private void handleData(int type, byte[] val)
         {
             switch (type)
             {
                 case MsgType.PAIRLIST :
-                    disconnect("pairlist!");
                     PairList partners = new PairList();
                     partners.fromByteArray(val);
                     setState(State.PAIRLIST_RECEIVED);
                     choosePair(partners);
-                    sendChoice();
-                    setState(State.PAIRCHOICE_SENT);
                     break;
+
                 case MsgType.PAYLOAD :
-                    disconnect("payload!");
                     Payload payload = new Payload();
                     payload.fromByteArray(val);
+                    addContact(payload);
                     setState(State.PAYLOAD_RECEIVED);
-                    OutlookSession session = new OutlookSession();
-                    Contact contact = new Contact();
-                    contact.LastName = payload.name;
-                    contact.MobileTelephoneNumber = payload.phoneNumber;
-                    session.Contacts.Items.Add(contact);
-                    session.Dispose();
                     break;
+
                 case MsgType.TIMEOUT :
                     disconnect("Disconnected due to timeout.");
                     break;
+
                 case MsgType.EXCHANGE_DENIED :
                     disconnect("Card exchange denied.");
                     break;
+
                 default:
                     System.Diagnostics.Debug.WriteLine("Wrong message type. Disconnecting.");
                     disconnect("Error occured");
@@ -220,14 +191,35 @@ namespace Mobilki
             }
         }
 
-        private void sendChoice()
+
+        private void addContact(Payload payload)
         {
-            byte[] buff = new byte[2 * 4];
-            Buffer.BlockCopy(BitConverter.GetBytes(MsgType.PAIR_ID), 0, buff, 0, 4);
-            Buffer.BlockCopy(BitConverter.GetBytes(SelectedPairId), 0, buff, 4, 4);
-            socket.Send(buff);
+            OutlookSession session = new OutlookSession();
+            Contact contact = new Contact();
+            contact.LastName = payload.name;
+            contact.MobileTelephoneNumber = payload.phoneNumber;
+            session.Contacts.Items.Add(contact);
+            session.Dispose();
         }
 
+        public void sendChoice(int id)
+        {
+            byte[] buff = new byte[3 * ByteUtils.INT_SIZE];
+
+            int offset = ByteUtils.writeIntBytes(MsgType.PAIR_ID, buff, 0);
+            offset = ByteUtils.writeIntBytes(4, buff, offset);
+            offset = ByteUtils.writeIntBytes(id, buff, offset);
+            
+            socket.Send(buff);
+            setState(State.PAIRCHOICE_SENT);
+
+            if (receiveData() < 0)
+            {
+                disconnect("Error while sending choice.");
+            }
+        }
+
+        
         private void disconnect(String s)
         {
             if (socket.Connected)
@@ -243,10 +235,20 @@ namespace Mobilki
 
         private void choosePair(PairList pairs)
         {
-            PartnersScreen f = new PartnersScreen(pairs, this);
-            Hide();
-            f.Show();
+            if (pairs.Count == 0)
+            {
+                exchangeMenuItem.Enabled = true;
+                disconnect("No partners available, sorry ziom.");
+                System.Diagnostics.Debug.WriteLine("No pairs, no pairs!");
+            }
+            else
+            {
+                PartnersScreen f = new PartnersScreen(pairs, this);
+                Hide();
+                f.Show();
+            }
         }
+
 
         private void showSettingsScreen()
         {
@@ -255,15 +257,18 @@ namespace Mobilki
             f.Show();     //shows new form
         }
 
+
         private void showSettingsScreen(object sender, EventArgs e)
         {
             showSettingsScreen();
         }
 
+
         private void exitMenuItemClicked(object sender, EventArgs e)
         {
             exit();
         }
+
 
         private void exit()
         {
