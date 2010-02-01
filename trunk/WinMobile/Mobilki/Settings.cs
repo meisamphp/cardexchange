@@ -13,8 +13,15 @@ namespace Mobilki
         private static NameValueCollection settings;
         private static string settingsPath;
 
-        // Static Ctor
+        public static double gpsLat = 0.0;
+        public static double gpsLon = 0.0;
+        public static double gpsAcc = 0.0;
+        public static double cellLat = 0.0;
+        public static double cellLon = 0.0;
+        public static double cellAcc = 0.0;
+        public static long time = 0;
 
+        // Static Ctor
         static Settings()
         {
             // Get the path of the settings file.
@@ -50,13 +57,18 @@ namespace Mobilki
             set { settings.Set("PhoneNumber", value); }
         }
 
-        public static double gpsLat = 0.0;
-        public static double gpsLon = 0.0;
-        public static double gpsAcc = 0.0;
-        public static double cellLat = 0.0;
-        public static double cellLon = 0.0;
-        public static double cellAcc = 0.0;
-        public static long time = 0;
+        public static void setLocation(Location location)
+        {
+            cellAcc = location.accuracy;
+            cellLat = location.latitude;
+            cellLon = location.longitude;
+        }
+
+        public static void setTime()
+        {
+            time = ByteUtils.getProperTime(DateTime.Now);
+        }
+
 
 
         public static void Update()
@@ -86,78 +98,41 @@ namespace Mobilki
             tw.Close();
         }
 
+        // ===========================================================
+
         public static byte[] ToByteArray()
         {
-            UTF8Encoding enc = new UTF8Encoding();
+            int messageType = MsgType.CLIENT_DATA;
+ 
+            byte[] nameBytes = ByteUtils.writeUtfString(Settings.Name);
+            byte[] phoneBytes = ByteUtils.writeUtfString(Settings.PhoneNumber);
 
-            int messageType = 0;
-            byte[] m = BitConverter.GetBytes(messageType);
-            
-            byte[] t = BitConverter.GetBytes(time);
-            byte[] g1 = BitConverter.GetBytes(gpsLat);
-            byte[] g2 = BitConverter.GetBytes(gpsLon);
-            byte[] g3 = BitConverter.GetBytes(gpsAcc);
-            byte[] c1 = BitConverter.GetBytes(cellLat);
-            byte[] c2 = BitConverter.GetBytes(cellLon);
-            byte[] c3 = BitConverter.GetBytes(cellAcc);
-            byte[] n = enc.GetBytes(Settings.Name.ToCharArray());
-            byte[] p = enc.GetBytes(Settings.PhoneNumber.ToCharArray());
-            
-            int dataLen = t.Length + g1.Length + g2.Length + g3.Length + c1.Length + c2.Length + c3.Length + n.Length + p.Length;
+            int dataLen = ByteUtils.LONG_SIZE // time
+                + ByteUtils.DOUBLE_SIZE * 3 // gps
+                + ByteUtils.DOUBLE_SIZE * 3 // cellId
+                + nameBytes.Length
+                + phoneBytes.Length;
 
-            byte[] d = BitConverter.GetBytes(dataLen);
+            byte[] buffer = new byte[dataLen + ByteUtils.INT_SIZE * 2]; // data length + message type
 
-            byte[] r = new byte[dataLen + m.Length + d.Length];
+            int offset = 0;
+            offset = ByteUtils.writeIntBytes(messageType, buffer, offset);
+            offset = ByteUtils.writeIntBytes(dataLen, buffer, offset);
+            offset = ByteUtils.writeLongBytes(time, buffer, offset);
+            offset = ByteUtils.writeDoubleBytes(gpsLat, buffer, offset);
+            offset = ByteUtils.writeDoubleBytes(gpsLon, buffer, offset);
+            offset = ByteUtils.writeDoubleBytes(gpsAcc, buffer, offset);
+            offset = ByteUtils.writeDoubleBytes(cellLat, buffer, offset);
+            offset = ByteUtils.writeDoubleBytes(cellLon, buffer, offset);
+            offset = ByteUtils.writeDoubleBytes(cellAcc, buffer, offset);
+            Buffer.BlockCopy(nameBytes, 0, buffer, offset, nameBytes.Length);
+            offset += nameBytes.Length;
+            Buffer.BlockCopy(phoneBytes, 0, buffer, offset, phoneBytes.Length);
+            offset += phoneBytes.Length;
 
-            
-            // a to ponizej, poniewaz klasa MemoryStream nie dziala
-            int o = 0;
-
-            for (int i = 0; i < m.Length; i++)
-            {
-                r[o++] = m[i];
-            }
-            for (int i = 0; i < d.Length; i++)
-            {
-                r[o++] = d[i];
-            }
-            for (int i = 0; i < t.Length; i++)
-            {
-                r[o++] = t[i];
-            }
-            for (int i = 0; i < g1.Length; i++)
-            {
-                r[o++] = g1[i];
-            }
-            for (int i = 0; i < g2.Length; i++)
-            {
-                r[o++] = g2[i];
-            }
-            for (int i = 0; i < g3.Length; i++)
-            {
-                r[o++] = g3[i];
-            }
-            for (int i = 0; i < c1.Length; i++)
-            {
-                r[o++] = c1[i];
-            }
-            for (int i = 0; i < c2.Length; i++)
-            {
-                r[o++] = c2[i];
-            }
-            for (int i = 0; i < c3.Length; i++)
-            {
-                r[o++] = c3[i];
-            }
-            for (int i = 0; i < n.Length; i++)
-            {
-                r[o++] = n[i];
-            }
-            for (int i = 0; i < p.Length; i++)
-            {
-                r[o++] = p[i];
-            }
-            return r;
+            return buffer;
         }
+
+
     }
 }

@@ -52,7 +52,7 @@
             // exchangeMenuItem
             // 
             this.exchangeMenuItem.Text = "Exchange";
-            this.exchangeMenuItem.Click += new System.EventHandler(this.button_Click);
+            this.exchangeMenuItem.Click += new System.EventHandler(this.exchangeButtonClick);
             // 
             // showSettingsMenuItem
             // 
@@ -80,7 +80,7 @@
             this.stateLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.stateLabel.Location = new System.Drawing.Point(35, 50);
             this.stateLabel.Name = "stateLabel";
-            this.stateLabel.Size = new System.Drawing.Size(100, 20);
+            this.stateLabel.Size = new System.Drawing.Size(100, 93);
             this.stateLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // MainScreen
