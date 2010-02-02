@@ -13,7 +13,7 @@ namespace Mobilki.CardExchangeUtils
             // initialize the Ntp object 
             Ntp ntp = new Ntp(Constants.NTP_SERVER_URL);
 
-            // get server time  
+            // get server time
             NtpResponse response = ntp.GetTime();
 
             return response.TimeOffset.TotalSeconds;

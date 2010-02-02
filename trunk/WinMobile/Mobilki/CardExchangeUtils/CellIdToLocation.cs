@@ -10,6 +10,7 @@ namespace Mobilki
 {
     class CellIdToLocation
     {
+        // Gets the cell ID and queries Ericsson Labs site on its location
         public static Location extractLocation()
         {
             string cellInfoFull = RIL.GetCellTowerInfo();
@@ -19,8 +20,7 @@ namespace Mobilki
                 return l;
             }
             string[] cellInfo = cellInfoFull.Split(new char[] { '-' });
-            Console.WriteLine(cellInfo[0]);
-            Console.WriteLine(cellInfo[1]);
+            // According to Ericsson Labs Mobile API, Cell ID and LAC should be hexadecimal
             cellInfo[0] = Convert.ToInt64(cellInfo[0]).ToString("X");
             cellInfo[1] = Convert.ToInt64(cellInfo[1]).ToString("X");
             WebRequest oRequest = WebRequest.Create(
@@ -28,6 +28,7 @@ namespace Mobilki
             WebResponse oResponse = oRequest.GetResponse(); 
             StreamReader oReader = new StreamReader(oResponse.GetResponseStream());
             string sContent = oReader.ReadToEnd();
+            // The response is a JSON file
             Hashtable h = (Hashtable)JSON.JsonDecode(sContent);
 
             l.latitude = double.Parse(((Hashtable)h["position"])["latitude"].ToString());
