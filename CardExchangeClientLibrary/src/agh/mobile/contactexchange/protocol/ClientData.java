@@ -7,6 +7,12 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 
+/**
+ * Client data message. This message contains client NTP time,
+ * its location data and a payload data a client would like to exchange.
+ * 
+ * @author wsowa
+ */
 public class ClientData implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -16,23 +22,34 @@ public class ClientData implements Serializable {
 	public long time; 
 	
 	/**
-	 * Client location according to GPS
+	 * Client latitude according to GPS
 	 */
 	public double gpsLatitude;
+	
+	/**
+	 * Client longitude according to GPS
+	 */
 	public double gpsLongitude;
-	/*
-	 * position accuracy in meters or -1.0 if GPS position is unknown
+	
+	/**
+	 * GPS position accuracy in meters or -1.0 if GPS position is unknown
 	 * or 0.0 if position is known but accuracy is unknown.
 	 */
 	public double gpsAccuracy;  
 
 	/**
-	 * Client location according to cellular network estimation
+	 * Client latitude according to cellular network estimation
 	 */
 	public double cellularLatitude;
+	
+	/**
+	 * Client longitude according to cellular network estimation
+	 */
 	public double cellularLongitude;
-	/*
-	 * position accuracy in meters. Same rules as for gpsAccuracy field.
+	
+	/**
+	 * Cellular position accuracy in meters or -1.0 if position is unknown
+	 * or 0.0 if position is known but accuracy is unknown.
 	 */
 	public double cellularAccuracy;
 	
@@ -41,6 +58,14 @@ public class ClientData implements Serializable {
 	 */
 	public Payload payload = new Payload();
 
+	
+	
+	/**
+	 * Deserialize a message
+	 * 
+	 * @param data Byte array of message body to deserialize from
+	 * @throws IOException error occurred while reading bytes 
+	 */
 	public void fromByteArray(byte[] data) throws IOException {
 		ByteArrayInputStream bais = new ByteArrayInputStream(data);
 		DataInputStream dis = new DataInputStream(bais);
@@ -59,6 +84,12 @@ public class ClientData implements Serializable {
 	}
 
 	
+	/**
+	 * Serialize a message
+	 * 
+	 * @return Byte array with serialized message body
+	 * @throws IOException error occurred while writing bytes 
+	 */
 	public byte[] toByteArray() throws IOException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		DataOutputStream dos = new DataOutputStream(baos);
