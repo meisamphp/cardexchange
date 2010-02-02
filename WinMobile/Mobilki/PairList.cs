@@ -8,6 +8,7 @@ namespace Mobilki
 {
     public class PairList : Hashtable
     {
+        // convert the byte data to a map of partner names and IDs
         public void fromByteArray(byte[] data)
         {
             int pairCount = ByteUtils.extractInt(data, 0);

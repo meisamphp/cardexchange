@@ -6,9 +6,9 @@ using Microsoft.WindowsMobile.Samples.Location;
 
 namespace Mobilki
 {
+    // Uses the Gps sample by Microsoft
     class GpsHandler
     {
-
         private MainScreen s = null;
         private EventHandler updateDataHandler;
         GpsPosition position = null;
@@ -23,7 +23,9 @@ namespace Mobilki
         public void Load()
         {
             updateDataHandler = new EventHandler(UpdateData);
+            // Updating the Gps position is asynchronous; seemed as the only good idea
             gps.LocationChanged += new LocationChangedEventHandler(gps_LocationChanged);
+            Start();
         }
 
         protected void gps_LocationChanged(object sender, LocationChangedEventArgs args)
@@ -46,11 +48,6 @@ namespace Mobilki
 
                     if (position.LongitudeValid)
                         Settings.gpsLon = position.Longitude;
-                    
-                    /*if (position.TimeValid)
-                    
-                        str += "Time:\n   " + position.Time.ToString() + "\n";
-                    */
                 }
             }
         }

@@ -18,6 +18,7 @@ namespace Mobilki
     {
         private Socket socket = null;
         private State state = State.IDLE;
+        private GpsHandler gps = null;
 
         public MainScreen()
         {
@@ -68,6 +69,7 @@ namespace Mobilki
                 return;
             }
             
+            // if the settings haven't been filled, show the settings screen
             if (Settings.Name.Length == 0 || Settings.PhoneNumber.Length == 0)
             {
                 showSettingsScreen();
@@ -76,16 +78,24 @@ namespace Mobilki
             {
                 setState(State.CONNECTED);
                 adjustSettings();
-                sendData();
-                if (receiveData() < 0)
-                    return;
-
+                try
+                {
+                    sendData();
+                    if (receiveData() < 0)
+                        return;
+                }
+                catch (SocketException)
+                {
+                    disconnect("An error occurred while connecting to server.");
+                }
             }
 
         }
 
         private void adjustSettings()
         {
+            // Get the current location and time
+
             try
             {
                 gps = new GpsHandler(this);
@@ -107,12 +117,21 @@ namespace Mobilki
             }
 
             Settings.setLocation(cellIdLocation);
-            Settings.setTime();
+            try
+            {
+                Settings.setTime();
+            }
+            catch (SocketException)
+            {
+                disconnect("A connection error occurred");
+            }
         }
 
         
         private void sendData()
         {
+            // Send client data - initialize communication with server
+
             System.Net.IPAddress ipAdd = System.Net.IPAddress.Parse(Constants.SERVER_IP);
             System.Net.IPEndPoint remoteEP = new IPEndPoint(ipAdd, Constants.SERVER_PORT);
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -126,6 +145,8 @@ namespace Mobilki
 
         private int receiveData()
         {
+            // receive a message from the server and interpret its content
+
             Byte[] buff = new Byte[Constants.BUFF_SIZE];
             int read = socket.Receive(buff);
 
@@ -154,7 +175,7 @@ namespace Mobilki
 
                     handleData(type, val);
 
-                    if (read > pos)
+                    if (read > pos) // reduce the buffer
                     {
                         byte[] rest = new byte[read - pos];
                         Buffer.BlockCopy(buff, pos, rest, 0, read - pos);
@@ -204,6 +225,8 @@ namespace Mobilki
 
         private void addContact(Payload payload)
         {
+            // Add to Outlook contacts
+
             OutlookSession session = new OutlookSession();
             Contact contact = new Contact();
             contact.LastName = payload.name;
@@ -214,6 +237,8 @@ namespace Mobilki
 
         public void sendChoice(int id)
         {
+            // Send the chosen partner's ID
+
             byte[] buff = new byte[3 * ByteUtils.INT_SIZE];
 
             int offset = ByteUtils.writeIntBytes(MsgType.PAIR_ID, buff, 0);
@@ -248,11 +273,11 @@ namespace Mobilki
             if (pairs.Count == 0)
             {
                 exchangeMenuItem.Enabled = true;
-                disconnect("No partners available, sorry ziom.");
-                System.Diagnostics.Debug.WriteLine("No pairs, no pairs!");
+                disconnect("No partners available, sorry.");
             }
             else
             {
+                // Show the partners choice screen
                 PartnersScreen f = new PartnersScreen(pairs, this);
                 Hide();
                 f.Show();

@@ -7,6 +7,8 @@ using System.Runtime.InteropServices;
 
 namespace Mobilki
 {
+    // The Radio Interface Layer wrapper by Dale Lane
+
     public class RIL
     {
         // string used to store the CellID string

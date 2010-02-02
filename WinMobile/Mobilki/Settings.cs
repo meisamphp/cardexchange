@@ -12,6 +12,8 @@ namespace Mobilki
 {
     class Settings
     {
+        // contains all the settings sent to the server
+
         private static NameValueCollection settings;
         private static string settingsPath;
 
@@ -110,10 +112,12 @@ namespace Mobilki
             tw.Close();
         }
 
-        // ===========================================================
+        
 
         public static byte[] ToByteArray()
         {
+            // serialize user data into a byte array
+
             int messageType = MsgType.CLIENT_DATA;
  
             byte[] nameBytes = ByteUtils.writeUtfString(Settings.Name);
