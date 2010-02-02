@@ -11,6 +11,13 @@ import agh.mobile.contactexchange.client.AbstractClient;
 import agh.mobile.contactexchange.protocol.ClientData;
 import agh.mobile.contactexchange.protocol.Payload;
 
+/**
+ * This is example console client for card exchange application.
+ * It may be used for testing mobile clients as a partner to exchange
+ * contact information with.
+ * 
+ * @author wsowa
+ */
 public class ConsoleExampleClient extends AbstractClient {
 
 	Map<Integer, String> partners;
