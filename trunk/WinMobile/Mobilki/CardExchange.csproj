@@ -51,7 +51,7 @@
     <Reference Include="mscorlib" />
     <Reference Include="Rebex.Net.Time, Version=2.0.3588.0, Culture=neutral, PublicKeyToken=1c4638788972655d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\Rebex\Time for .NET CF 3.5 Trial\bin\Rebex.Net.Time.dll</HintPath>
+      <HintPath>C:\Program Files\Rebex\Time for .NET CF 3.5 Trial\bin\Rebex.Net.Time.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -67,9 +67,9 @@
     <Compile Include="ByteUtils.cs" />
     <Compile Include="CardExchangeUtils\CellIdToLocation.cs" />
     <Compile Include="CardExchangeUtils\GpsHandler.cs" />
+    <Compile Include="CardExchangeUtils\JSON.cs" />
     <Compile Include="CardExchangeUtils\NTPClient.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="JSON.cs" />
     <Compile Include="CardExchangeUtils\RIL.cs" />
     <Compile Include="PairList.cs" />
     <Compile Include="PartnersScreen.cs">
