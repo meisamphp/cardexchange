@@ -75,29 +75,39 @@ namespace Mobilki
             else
             {
                 setState(State.CONNECTED);
-
-                //GpsHandler h = new GpsHandler(this);
-                //h.Load();
-                
-                Location cellIdLocation = new Location();
-                try
-                {
-                    cellIdLocation = CellIdToLocation.extractLocation();
-                }
-                catch (Exception x)
-                {
-                    System.Diagnostics.Debug.WriteLine(x.StackTrace);
-                }
-
-                Settings.setLocation(cellIdLocation);
-                Settings.setTime();
-
+                adjustSettings();
                 sendData();
                 if (receiveData() < 0)
                     return;
 
             }
 
+        }
+
+        private void adjustSettings()
+        {
+            try
+            {
+                gps = new GpsHandler(this);
+                gps.Load(); // will update settings automatically
+            }
+            catch (Exception x)
+            {
+                System.Diagnostics.Debug.WriteLine(x.StackTrace);
+            }
+
+            Location cellIdLocation = new Location();
+            try
+            {
+                cellIdLocation = CellIdToLocation.extractLocation();
+            }
+            catch (Exception x)
+            {
+                System.Diagnostics.Debug.WriteLine(x.StackTrace);
+            }
+
+            Settings.setLocation(cellIdLocation);
+            Settings.setTime();
         }
 
         
@@ -222,7 +232,7 @@ namespace Mobilki
         
         private void disconnect(String s)
         {
-            if (socket.Connected)
+            if (socket != null && socket.Connected)
             {
                 socket.Close();
             }

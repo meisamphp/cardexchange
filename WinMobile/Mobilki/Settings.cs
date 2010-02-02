@@ -5,6 +5,8 @@ using System.Text;
 using System.Collections.Specialized;
 using System.IO;
 using System.Xml;
+using Mobilki.CardExchangeUtils;
+using Rebex.Net;
 
 namespace Mobilki
 {
@@ -66,7 +68,17 @@ namespace Mobilki
 
         public static void setTime()
         {
-            time = ByteUtils.getProperTime(DateTime.Now);
+            try
+            {
+                double ntpSeconds = NTPClient.getNtpTime();
+                double ntpMilis = ntpSeconds * 1000;
+                time = (long)(ByteUtils.getProperTime(DateTime.Now) + ntpMilis);
+            }
+            catch (NtpException)
+            {
+                time = ByteUtils.getProperTime(DateTime.Now);
+                System.Diagnostics.Debug.WriteLine("Error connecting to NTP server, using local time instead.");
+            }
         }
 
 

@@ -12,6 +12,7 @@ namespace Mobilki
         public const string SERVER_IP = "192.168.1.101";
         public const int SERVER_PORT = 4444;
 
+        public const string NTP_SERVER_URL = "tempus1.gum.gov.pl";
     }
 
     public enum State

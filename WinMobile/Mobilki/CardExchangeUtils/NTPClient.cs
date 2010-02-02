@@ -8,16 +8,15 @@ namespace Mobilki.CardExchangeUtils
 {
     class NTPClient
     {
-        public static void getNtpTime()
+        public static double getNtpTime()
         {
             // initialize the Ntp object 
-            Ntp ntp = new Ntp("time.nist.gov");
+            Ntp ntp = new Ntp(Constants.NTP_SERVER_URL);
 
             // get server time  
             NtpResponse response = ntp.GetTime();
 
-            // get time difference  
-            Console.WriteLine(response);
+            return response.TimeOffset.TotalSeconds;
         }
     }
 }
