@@ -22,7 +22,7 @@ import agh.mobile.contactexchange.protocol.Payload;
 /**
  * Connection to the exchange server
  * 
- * @author wsowa
+ * @author Witold Sowa <witold.sowa@gmail.com>
  *
  */
 public class Connection {

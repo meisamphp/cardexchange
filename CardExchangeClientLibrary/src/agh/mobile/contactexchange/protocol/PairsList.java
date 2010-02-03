@@ -12,7 +12,7 @@ import java.util.Map.Entry;
  * Pairs list  message. This message contains a list of clients that
  * a client can be paired with.
  * 
- * @author wsowa
+ * @author Witold Sowa <witold.sowa@gmail.com>
  */
 public class PairsList extends HashMap<Integer, String> {
 	private static final long serialVersionUID = 1L;

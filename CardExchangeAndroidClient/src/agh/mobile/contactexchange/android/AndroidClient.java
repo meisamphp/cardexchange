@@ -19,7 +19,7 @@ import android.util.Log;
  * Android exchange client implementation. It runs as a separate
  * thread waiting for data from server.
  * 
- * @author wsowa
+ * @author Witold Sowa <witold.sowa@gmail.com>
  *
  */
 public class AndroidClient extends AbstractClient implements Runnable {
@@ -27,7 +27,7 @@ public class AndroidClient extends AbstractClient implements Runnable {
 	/**
 	 * Client states
 	 * 
-	 * @author wsowa
+	 * @author Witold Sowa <witold.sowa@gmail.com>
 	 *
 	 */
 	enum State {
@@ -72,7 +72,7 @@ public class AndroidClient extends AbstractClient implements Runnable {
 	/**
 	 * Reason of client state change
 	 * 
-	 * @author wsowa
+	 * @author Witold Sowa <witold.sowa@gmail.com>
 	 *
 	 */
 	enum Reason {

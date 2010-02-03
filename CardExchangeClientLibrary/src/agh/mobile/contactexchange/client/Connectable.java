@@ -9,7 +9,7 @@ import agh.mobile.contactexchange.protocol.Payload;
  * order to be notified about messages received from the server.
  * Each of these methods may be called right after new data was received.
  * 
- * @author wsowa
+ * @author Witold Sowa <witold.sowa@gmail.com>
  *
  */
 interface Connectable {

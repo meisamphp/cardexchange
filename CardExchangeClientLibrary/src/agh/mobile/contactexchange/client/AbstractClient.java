@@ -15,7 +15,7 @@ import com.google.code.sntpjc.Client;
  * {@link agh.mobile.contactexchange.client.Connectable} interface.
  * {@link #init()} must be first called method of objects of this class.
  * 
- * @author wsowa
+ * @author Witold Sowa <witold.sowa@gmail.com>
  *
  */
 public abstract class AbstractClient implements Connectable {

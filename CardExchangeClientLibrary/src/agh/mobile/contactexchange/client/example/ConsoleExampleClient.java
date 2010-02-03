@@ -16,7 +16,7 @@ import agh.mobile.contactexchange.protocol.Payload;
  * It may be used for testing mobile clients as a partner to exchange
  * contact information with.
  * 
- * @author wsowa
+ * @author Witold Sowa <witold.sowa@gmail.com>
  */
 public class ConsoleExampleClient extends AbstractClient {
 
