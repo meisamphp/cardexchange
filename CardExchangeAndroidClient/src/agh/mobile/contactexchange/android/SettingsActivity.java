@@ -9,6 +9,14 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 
+/**
+ * An Android activity allowing user to set data that he is willing to
+ * exchange. There are fields "settings" and "response" in calling Intent
+ * and in result which contain serialized UserSettings object.
+ * 
+ * @author wsowa
+ *
+ */
 public class SettingsActivity extends Activity implements OnClickListener {
 	
 	UserSettings settings;
@@ -43,17 +51,23 @@ public class SettingsActivity extends Activity implements OnClickListener {
 	
 	private void setSettings() {
 		EditText et;
+		
+		// get text from Name EditText and store it in UserSettings object
         et = (EditText) findViewById(R.id.NameEdit);
         settings.setName(et.getText().toString());
+        
+		// get text from Phone EditText and store it in UserSettings object
         et = (EditText) findViewById(R.id.PhoneEdit);
         settings.setPhone(et.getText().toString());
 
+        // if settings are complete (i.e. are both set) then finish activity
         if (settings.complete()) {
         	Intent intent = getIntent();
         	intent.putExtra("response", settings);
         	setResult(RESULT_OK, intent);
         	finish();
         }
+        // if setting are not complete then show error alert.
         else {
         	new AlertDialog.Builder(this)
         	.setMessage("You must fill all settings fields")

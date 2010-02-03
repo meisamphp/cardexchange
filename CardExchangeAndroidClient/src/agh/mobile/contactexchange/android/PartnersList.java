@@ -26,20 +26,35 @@ class ListEntry {
 	}
 }
 
+
+/**
+ * Android activity presenting list of potential partners received from
+ * Card Exchange server. When finishing, this activity returns result with
+ * id of selected partner. The intent, which called this activity must
+ * containt extra field "partners" with serialized HashMap containing partners
+ * list.
+ * 
+ * @author wsowa
+ */
 public class PartnersList extends ListActivity {
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		// set view title
 		setTitle("Select a partner to exchange cards");
 		
+		// get partners list
 		HashMap<Integer, String> partners = (HashMap<Integer, String>) getIntent().getExtras().getSerializable("partners");
 
+		// add partners to the list
 		ArrayList<ListEntry> list = new ArrayList<ListEntry>();
 		for (Entry<Integer, String> e : partners.entrySet())
 			list.add(new ListEntry(e.getKey(), e.getValue()));
 
+		// set the list as a adapter for ListView
 		setListAdapter(new ArrayAdapter<ListEntry>(this,
 				android.R.layout.simple_list_item_1, list));
 	} 
@@ -51,6 +66,7 @@ public class PartnersList extends ListActivity {
 		// Get the item that was clicked
 		ListEntry entry = (ListEntry) (this.getListAdapter().getItem(position));
 		
+		// set the result
     	Intent intent = getIntent();
     	intent.putExtra("partnerId", entry.id);
     	setResult(RESULT_OK, intent);
