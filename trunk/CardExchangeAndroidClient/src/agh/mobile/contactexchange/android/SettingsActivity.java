@@ -14,7 +14,7 @@ import android.widget.EditText;
  * exchange. There are fields "settings" and "response" in calling Intent
  * and in result which contain serialized UserSettings object.
  * 
- * @author wsowa
+ * @author Witold Sowa <witold.sowa@gmail.com>
  *
  */
 public class SettingsActivity extends Activity implements OnClickListener {

@@ -11,7 +11,7 @@ import java.io.Serializable;
  * Client data message. This message contains client NTP time,
  * its location data and a payload data a client would like to exchange.
  * 
- * @author wsowa
+ * @author Witold Sowa <witold.sowa@gmail.com>
  */
 public class ClientData implements Serializable {
 	private static final long serialVersionUID = 1L;

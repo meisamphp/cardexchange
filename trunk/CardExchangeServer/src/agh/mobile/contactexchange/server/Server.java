@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 /**
  * Main CardExchange server class.
  * 
- * @author wsowa
+ * @author Witold Sowa <witold.sowa@gmail.com>
  */
 public class Server {
 	private static Logger logger = Logger.getLogger("global");

@@ -11,7 +11,7 @@ import java.io.IOException;
 /**
  * Message containing data that clients are exchanging.
  * 
- * @author wsowa
+ * @author Witold Sowa <witold.sowa@gmail.com>
  */
 public class Payload implements Serializable {
 	private static final long serialVersionUID = 1L;

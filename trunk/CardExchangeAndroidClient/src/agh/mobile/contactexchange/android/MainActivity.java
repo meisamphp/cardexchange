@@ -32,7 +32,7 @@ import android.widget.TextView;
  * exchange. Takes care of location updates and starts thread running
  * exchange client.
  * 
- * @author wsowa
+ * @author Witold Sowa <witold.sowa@gmail.com>
  *
  */
 public class MainActivity extends Activity implements OnClickListener, OnCancelListener, Callback, LocationListener {

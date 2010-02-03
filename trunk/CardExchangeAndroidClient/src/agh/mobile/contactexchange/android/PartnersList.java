@@ -34,7 +34,7 @@ class ListEntry {
  * containt extra field "partners" with serialized HashMap containing partners
  * list.
  * 
- * @author wsowa
+ * @author Witold Sowa <witold.sowa@gmail.com>
  */
 public class PartnersList extends ListActivity {
 	

@@ -29,7 +29,7 @@ class Location {
  * Server representation of a client. Contains data received from client,
  * transaction state, client id, client data.
  *  
- * @author wsowa
+ * @author Witold Sowa <witold.sowa@gmail.com>
  */
 class Client {
 	private static Logger logger = Logger.getLogger("global");

@@ -29,7 +29,7 @@ package agh.mobile.contactexchange.protocol;
  * Messages exchange can be interrupted at any moment by the TIMEDOUT
  * message sent from the server to a client.
  * 
- * @author wsowa
+ * @author Witold Sowa <witold.sowa@gmail.com>
  */
 public interface MessageType {
 	
