@@ -1,0 +1,2 @@
+Project consist of application server and mobile applications for Android, Windows CE/Mobile and JavaME platforms. The purpose of this application is to allow user exchange basic contact informations between mobile devices with only one button press. Mobile devices are required to have active Internet connection and to provide some location service like GSM or positioning by CellID.
+This is a student project made for Mobile Systems classes, at AGH University of Technology in 2009/2010 academic year.
